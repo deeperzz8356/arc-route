@@ -1,12 +1,44 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import { HomePage } from "@/components/HomePage";
+import { SearchDestination } from "@/components/SearchDestination";
+import { MapView } from "@/components/MapView";
+import { ARCameraView } from "@/components/ARCameraView";
+import { NavigationActive } from "@/components/NavigationActive";
 
 const Index = () => {
+  const [currentScreen, setCurrentScreen] = useState<string>("home");
+  const [selectedDestination, setSelectedDestination] = useState<string>("Lab 203");
+
+  const handleNavigate = (screen: string, destination?: string) => {
+    setCurrentScreen(screen);
+    if (destination) {
+      setSelectedDestination(destination);
+    }
+  };
+
+  const handleBack = () => {
+    if (currentScreen === "ar" || currentScreen === "map") {
+      setCurrentScreen("navigation");
+    } else if (currentScreen === "navigation") {
+      setCurrentScreen("search");
+    } else {
+      setCurrentScreen("home");
+    }
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen">
+      {currentScreen === "home" && <HomePage onNavigate={handleNavigate} />}
+      {currentScreen === "search" && <SearchDestination onNavigate={handleNavigate} onBack={handleBack} />}
+      {currentScreen === "map" && <MapView onNavigate={handleNavigate} onBack={handleBack} />}
+      {currentScreen === "ar" && <ARCameraView destination={selectedDestination} onBack={handleBack} />}
+      {currentScreen === "navigation" && (
+        <NavigationActive 
+          destination={selectedDestination} 
+          onNavigate={handleNavigate} 
+          onBack={handleBack} 
+        />
+      )}
     </div>
   );
 };
