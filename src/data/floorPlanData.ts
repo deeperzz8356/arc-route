@@ -29,26 +29,80 @@ export const floorPlanData = {
     { name: 'FIRE\nEXIT', points: [[25, 21], [31, 21], [31, 24], [25, 24]] },
   ],
   walls: [
-    { p1: [-1, -2], p2: [24.5, -2] }, { p1: [-1, -2], p2: [-1, 33.5] }, { p1: [0, 32], p2: [4, 32] },
-    { p1: [4, 37], p2: [24, 37] }, { p1: [4, 32], p2: [4, 33] }, { p1: [24, 33], p2: [24, 37] },
-    { p1: [25, -4], p2: [30, -4] }, { p1: [30, -4], p2: [30, 8] }, { p1: [25, 9], p2: [32, 9] },
-    { p1: [32, 9], p2: [32, 13] }, { p1: [30, 13], p2: [32, 13] }, { p1: [25, 17], p2: [30, 17] },
-    { p1: [30, 13], p2: [30, 17] }, { p1: [25, 17], p2: [25, 21] }, { p1: [25, 21], p2: [31, 21] },
-    { p1: [31, 24], p2: [33, 24] }, { p1: [33, 24], p2: [33, 27] }, { p1: [26, 27], p2: [33, 27] },
-    { p1: [26, 24], p2: [26, 27] }, { p1: [10, 0], p2: [10, 15] }, { p1: [16, 0], p2: [16, 8] },
-    { p1: [16, 5], p2: [22, 5] }, { p1: [0, 15], p2: [6, 15] }, { p1: [0, 22], p2: [3, 22] },
-    { p1: [0, 24], p2: [3, 24] }, { p1: [0, 26], p2: [3, 26] }, { p1: [0, 27], p2: [6, 27] },
-    { p1: [0, 30], p2: [6, 30] }, { p1: [6, 8], p2: [22, 8] }, { p1: [6, 8], p2: [6, 22] },
-    { p1: [18, 20], p2: [18, 22] }, { p1: [20, 18], p2: [20, 20] }, { p1: [22, 8], p2: [22, 18] },
-    { p1: [20, 18], p2: [24, 18] }, { p1: [20, 21], p2: [24, 21] }, { p1: [24, 18], p2: [24, 23] },
-    { p1: [4, 33], p2: [24, 33] }, { p1: [7, 30], p2: [19, 30] }, { p1: [7, 27], p2: [7, 30] },
-    { p1: [11, 27], p2: [11, 30] }, { p1: [15, 27], p2: [15, 30] }, { p1: [16, 33], p2: [16, 37] },
-    { p1: [20, 33], p2: [20, 37] }, { p1: [25, 0], p2: [30, 0] }, { p1: [25, 4], p2: [30, 4] },
-    { p1: [25, 8], p2: [30, 8] }, { p1: [25, 9], p2: [30, 9] }, { p1: [25, 13], p2: [30, 13] },
-    { p1: [30, 9], p2: [30, 13] }, { p1: [31, 21], p2: [31, 24] },
+    // --- Outer Perimeter Walls --- done
+    { p1: [-1, -2], p2: [24.5, -2] },      // Top wall of Workshop, Gymkhana, Lab
+    { p1: [-1, -2], p2: [-1, 33.5] },      // Left wall of Workshop, Roy 7 A, Toilets, Admin
+    { p1: [-1, 33.5], p2: [4.5, 33.5] },      // Bottom wall of Amenities
+    { p1: [4, 38], p2: [24.5, 38] },     // Bottom wall of Seminar Hall & Admins
+    { p1: [4.2, 38], p2: [4.2, 31.5] },      // Connecting wall Amenities to Seminar Hall
+    { p1: [24.5, 31.5], p2: [24.5, 38] },     // Right wall of south Admin
+
+    // --- East Wing & Entrance Outer Walls --- done
+    { p1: [26.5, -2], p2: [31, -2] },   // Top wall of top Lab
+    { p1: [31, -2], p2: [31, 28.5] },    // Right wall of top Lab & Store
+    { p1: [26.5, 16], p2: [31, 16] },   // Bottom wall of bottom Lab
+    { p1: [26.5, 16], p2: [26.5, 21] },   // Left wall of Fire Exit access
+    { p1: [26.5, 21], p2: [31, 21] },   // Top wall of Fire Exit
+    { p1: [31, 21], p2: [35, 21] },   // Top wall of Lift
+    { p1: [35, 21], p2: [35, 34] },   // Right wall of Lift
+    { p1: [26.7, 34], p2: [30, 34] },   // Bottom wall of Lobby & Lift
+    { p1: [31, 34], p2: [35, 34] },   // Bottom wall of Lobby & Lift
+    { p1: [30, 31], p2: [30, 39] },   // Bottom wall of Lobby & Lift
+    { p1: [26.7, 31], p2: [26.7, 39] },   // Bottom wall of Lobby & Lift
+    { p1: [28, 39], p2: [30, 39] },   // Bottom wall of Lobby & Lift
+    { p1: [26.5, 21], p2: [26.5, 28.5] },   // Left wall of Lobby
+
+    // --- Internal Walls ---
+    // Workshop/Gymkhana/Lab dividers  DONE
+    { p1: [10.5, -2], p2: [10.5, 5.5] },     // Workshop -> Gymkhana
+    { p1: [17, -2], p2: [17, 5.5] },      // Gymkhana -> Lab / Dark Room
+    { p1: [24.5, -2], p2: [24.5, 4] },      // Lab -> Dark Room
+
+    // West wing dividers DONE
+    { p1: [-1, 12], p2: [5, 12] },      // Workshop -> Roy 7 A
+    { p1: [-1, 16], p2: [6, 16] },      // Roy 7 A -> Toilets
+    { p1: [-1, 19], p2: [3, 19] },      // Ladies -> Gents
+    { p1: [-1, 22.5], p2: [3, 22.5] },      // Gents -> Admin
+    { p1: [3, 17.5], p2: [3, 21] },      // Admin -> Amenities
+
+    // Seminar Area and adjacent  DONE
+    { p1: [7, 5.5], p2: [10.5, 5.5] },
+    { p1: [11.5, 5.5], p2: [24.5, 5.5] },    // Top wall of Seminar Area
+    { p1: [6, -2], p2: [6, 10] },    // Left wall of Seminar Area
+    { p1: [6, 11.5], p2: [6, 23] },
+    { p1: [6, 23], p2: [22.5, 23] },     // Left wall of Seminar Area
+    { p1: [-1, 24.5], p2: [7, 24.5] },    // Left wall of Seminar Area
+    { p1: [8, 24.5], p2: [12, 24.5] },    // Left wall of Seminar Area
+    { p1: [13, 24.5], p2: [24.5, 24.5] },    // Left wall of Seminar Area
+    { p1: [17.5, 15.5], p2: [17.5, 23] },   // Seminar Area inner corner
+    { p1: [24.5, 8], p2: [24.5, 23] },    // Right wall of Seminar Area
+    { p1: [17.5, 15.5], p2: [24.5, 15.5] },   // Top wall of Lab near Seminar
+
+    // South wing dividers DONE
+    { p1: [4, 31.5], p2: [12, 31.5] },
+    { p1: [13.5, 31.5], p2: [17, 31.5] },
+    { p1: [18, 31.5], p2: [24.5, 31.5] },  // Top wall of Seminar Hall & Admins
+    { p1: [-1, 29.5], p2: [19, 29.5] },     // Bottom wall of Admin Offices
+    { p1: [8, 24.5], p2: [8, 29.5] },      // Admin Office dividers
+    { p1: [13, 24.5], p2: [13, 29.5] },   // Admin Office dividers
+    { p1: [17.5, 24.5], p2: [17.5, 29.5] },   // Admin Office dividers
+    { p1: [13.5, 31.5], p2: [13.5, 38] },   // Seminar Hall -> Admin divider
+    { p1: [18, 31.5], p2: [18, 38] },   // Admin -> Admin divider
+
+    // East wing dividers DONE
+    { p1: [26.5, 2.5], p2: [31, 2.5] },      // Lab -> Store
+    { p1: [28, 28.5], p2: [31, 28.5] },      // Lab -> Store
+    { p1: [26.5, -2], p2: [26.5, 1] },      // Store -> Lab
+    { p1: [26.5, 4], p2: [26.5, 8] },      // Store -> Lab
+    { p1: [26.5, 9], p2: [26.5, 16] },      // Store -> Lab
+    { p1: [33, 28.5], p2: [35, 28.5] },      // Corridor -> Lab
+    { p1: [31, 25], p2: [35, 25] },      // Corridor -> Lab
+    { p1: [31, 31.5], p2: [33, 31.5] },   // Lab -> Lab
+    { p1: [31, 33], p2: [34, 33] },   // Lab -> Lab
+    { p1: [31, 31.5], p2: [31, 33] },   // Lab -> Lab
+    { p1: [34, 30], p2: [34, 33] },   // Lab -> Lab
   ],
-  wallHeight: 1.5,
-  wallThickness: 0.1,
-  planSize: { width: 38, height: 42 },
-  lobbyCenter: { x: 28.5, z: 25.5 }
+  wallHeight: 3,
+  wallThickness: 0.2,
+  planSize: { width: 38, height: 42 }
 };
