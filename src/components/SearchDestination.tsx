@@ -3,22 +3,31 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, MapPin, Clock, Sparkles, ArrowRight, X } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { floorPlanData } from "@/data/floorPlanData";
 
 interface SearchDestinationProps {
   onNavigate: (screen: string, destination?: string) => void;
   onBack: () => void;
 }
 
-const DESTINATIONS = [
-  { name: "Lab 203", category: "Laboratory", floor: "2nd Floor", distance: "120m" },
-  { name: "Admin Office", category: "Administration", floor: "1st Floor", distance: "45m" },
-  { name: "Seminar Hall", category: "Events", floor: "3rd Floor", distance: "200m" },
-  { name: "Library", category: "Study", floor: "2nd Floor", distance: "85m" },
-  { name: "Cafeteria", category: "Dining", floor: "Ground Floor", distance: "30m" },
-  { name: "Auditorium", category: "Events", floor: "Ground Floor", distance: "150m" },
-];
+// Generate destinations from floor plan data
+const DESTINATIONS = floorPlanData.rooms.map((room, index) => ({
+  name: room.name.replace('\n', ' '),
+  category: room.name.includes('LAB') ? 'Laboratory' : 
+            room.name.includes('ADMIN') ? 'Administration' :
+            room.name.includes('SEMINAR') ? 'Events' :
+            room.name.includes('TOILET') ? 'Facilities' :
+            room.name.includes('LIFT') || room.name.includes('EXIT') ? 'Navigation' :
+            'General',
+  floor: '2nd Floor',
+  distance: `${Math.floor(Math.random() * 150) + 20}m`
+}));
 
-const RECENT = ["Lab 203", "Cafeteria", "Library"];
+const RECENT = [
+  DESTINATIONS[0]?.name || "Workshop",
+  DESTINATIONS.find(d => d.name.includes('LOBBY'))?.name || "Lobby", 
+  DESTINATIONS.find(d => d.name.includes('LAB'))?.name || "Lab"
+].filter(Boolean);
 
 export const SearchDestination = ({ onNavigate, onBack }: SearchDestinationProps) => {
   const [search, setSearch] = useState("");

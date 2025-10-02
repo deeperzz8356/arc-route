@@ -2,35 +2,59 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Volume2, VolumeX, Navigation, MapPin } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { CameraView } from "./CameraView";
+import { floorPlanData } from "@/data/floorPlanData";
 
 interface ARCameraViewProps {
   destination?: string;
   onBack: () => void;
 }
 
-export const ARCameraView = ({ destination = "Lab 203", onBack }: ARCameraViewProps) => {
+export const ARCameraView = ({ destination = "ENTRANCE\nLOBBY", onBack }: ARCameraViewProps) => {
   const [isMuted, setIsMuted] = useState(false);
   const [distance, setDistance] = useState(85);
-  const [direction, setDirection] = useState("Turn right ahead");
+  const [direction, setDirection] = useState("Walk straight ahead");
+  const [cameraReady, setCameraReady] = useState(false);
 
   useEffect(() => {
-    // Simulate distance decreasing
+    // Simulate navigation with voice guidance
+    const directions = [
+      "Walk straight ahead",
+      "Turn right ahead", 
+      "Continue straight",
+      "Turn left at the corner",
+      "Almost there"
+    ];
+    
+    let dirIndex = 0;
     const interval = setInterval(() => {
-      setDistance(prev => Math.max(0, prev - 1));
+      setDistance(prev => {
+        const newDist = Math.max(0, prev - 3);
+        
+        // Update direction every 15 meters
+        if (newDist % 15 === 0 && dirIndex < directions.length - 1) {
+          dirIndex++;
+          setDirection(directions[dirIndex]);
+          
+          // Voice guidance
+          if (!isMuted && 'speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(directions[dirIndex]);
+            utterance.rate = 0.9;
+            speechSynthesis.speak(utterance);
+          }
+        }
+        
+        return newDist;
+      });
     }, 1000);
+    
     return () => clearInterval(interval);
-  }, []);
+  }, [isMuted]);
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden">
-      {/* Camera feed simulation (gradient background) */}
-      <div className="absolute inset-0 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900"></div>
-      
-      {/* Simulated camera feed overlay */}
-      <div className="absolute inset-0 opacity-5" style={{
-        backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)',
-        backgroundSize: '50px 50px'
-      }}></div>
+      {/* Real camera feed */}
+      <CameraView onCameraReady={() => setCameraReady(true)} />
 
       {/* AR Overlays */}
       <div className="absolute inset-0">
@@ -88,24 +112,34 @@ export const ARCameraView = ({ destination = "Lab 203", onBack }: ARCameraViewPr
 
         {/* Floating label at destination */}
         <div className="absolute top-1/4 right-1/4 animate-float">
-          <Card className="glass-effect px-4 py-2 border-primary/50 shadow-[0_0_20px_rgba(147,51,234,0.4)]">
+          <Card className="glass-effect px-4 py-2 border-primary/50 shadow-lg bg-card/90">
             <div className="flex items-center gap-2">
               <MapPin className="w-4 h-4 text-primary animate-pulse-glow" />
               <div>
-                <p className="text-sm font-semibold">{destination}</p>
-                <p className="text-xs text-secondary">{distance}m ahead</p>
+                <p className="text-sm font-semibold">{destination.replace('\n', ' ')}</p>
+                <p className="text-xs text-muted-foreground">{distance}m ahead</p>
               </div>
             </div>
           </Card>
         </div>
 
-        {/* POI markers in view */}
-        <div className="absolute top-1/3 left-1/4 animate-float" style={{ animationDelay: '0.5s' }}>
-          <div className="w-3 h-3 rounded-full bg-accent shadow-[0_0_15px_rgba(168,85,247,0.6)] animate-pulse-glow"></div>
-          <span className="absolute top-5 left-1/2 -translate-x-1/2 text-xs bg-card/80 px-2 py-1 rounded border border-accent/50 whitespace-nowrap">
-            Cafeteria
-          </span>
-        </div>
+        {/* POI markers from floor plan */}
+        {['TOILET\nGENTS', 'LIFT', 'FIRE\nEXIT'].map((poi, index) => (
+          <div 
+            key={poi}
+            className="absolute animate-float" 
+            style={{ 
+              top: `${30 + index * 15}%`, 
+              left: `${20 + index * 20}%`,
+              animationDelay: `${index * 0.3}s` 
+            }}
+          >
+            <div className="w-3 h-3 rounded-full bg-accent shadow-lg animate-pulse-glow"></div>
+            <span className="absolute top-5 left-1/2 -translate-x-1/2 text-xs bg-card/90 px-2 py-1 rounded border border-border whitespace-nowrap">
+              {poi.replace('\n', ' ')}
+            </span>
+          </div>
+        ))}
       </div>
 
       {/* Top Bar */}
