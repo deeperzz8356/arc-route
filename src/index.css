@@ -8,42 +8,42 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 220 25% 8%;
-    --foreground: 210 40% 98%;
-    --card: 220 25% 10%;
-    --card-foreground: 210 40% 98%;
-    --popover: 220 25% 12%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 262 83% 58%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 217 91% 60%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 220 15% 20%;
-    --muted-foreground: 210 20% 70%;
-    --accent: 280 100% 70%;
-    --accent-foreground: 210 40% 98%;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 15%;
+    --primary: 221 83% 53%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 15%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 221 83% 53%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 220 20% 20%;
-    --input: 220 20% 18%;
-    --ring: 262 83% 58%;
-    --radius: 0.75rem;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 221 83% 53%;
+    --radius: 0.5rem;
     
-    /* AR Navigation Theme */
-    --neon-blue: 217 91% 60%;
+    /* AR Navigation Theme - Clean & Minimal */
+    --neon-blue: 221 83% 53%;
     --neon-purple: 262 83% 58%;
     --neon-cyan: 186 94% 62%;
-    --ar-glow: 262 83% 58%;
-    --path-color: 217 91% 60%;
+    --ar-glow: 221 83% 53%;
+    --path-color: 221 83% 53%;
     
-    --sidebar-background: 220 25% 10%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 262 83% 58%;
-    --sidebar-primary-foreground: 210 40% 98%;
-    --sidebar-accent: 220 20% 20%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 220 20% 20%;
-    --sidebar-ring: 262 83% 58%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 0 0% 15%;
+    --sidebar-primary: 221 83% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 96%;
+    --sidebar-accent-foreground: 0 0% 15%;
+    --sidebar-border: 0 0% 90%;
+    --sidebar-ring: 221 83% 53%;
   }
 }
 
@@ -60,21 +60,17 @@ All colors MUST be HSL.
 
 @layer utilities {
   .neon-glow {
-    text-shadow: 0 0 10px hsl(var(--neon-purple) / 0.8), 
-                 0 0 20px hsl(var(--neon-blue) / 0.6),
-                 0 0 30px hsl(var(--neon-cyan) / 0.4);
+    text-shadow: none;
   }
   
   .ar-path-glow {
-    box-shadow: 0 0 20px hsl(var(--path-color) / 0.6),
-                0 0 40px hsl(var(--path-color) / 0.4),
-                inset 0 0 20px hsl(var(--path-color) / 0.2);
+    box-shadow: 0 2px 8px hsl(var(--path-color) / 0.2);
   }
   
   .glass-effect {
-    background: hsl(var(--card) / 0.4);
-    backdrop-filter: blur(12px) saturate(180%);
-    border: 1px solid hsl(var(--border) / 0.3);
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
   }
 }
 
