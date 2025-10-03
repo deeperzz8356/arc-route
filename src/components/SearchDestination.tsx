@@ -40,7 +40,7 @@ export const SearchDestination = ({ onNavigate, onBack }: SearchDestinationProps
 
   const handleSelectDestination = (destName: string) => {
     setSelectedDestination(destName);
-    onNavigate('navigation', destName);
+    onNavigate('ar', destName);
   };
 
   return (

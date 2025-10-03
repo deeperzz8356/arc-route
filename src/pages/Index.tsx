@@ -17,8 +17,10 @@ const Index = () => {
   };
 
   const handleBack = () => {
-    if (currentScreen === "ar" || currentScreen === "map") {
-      setCurrentScreen("navigation");
+    if (currentScreen === "ar") {
+      setCurrentScreen("search");
+    } else if (currentScreen === "map") {
+      setCurrentScreen("search");
     } else if (currentScreen === "navigation") {
       setCurrentScreen("search");
     } else {

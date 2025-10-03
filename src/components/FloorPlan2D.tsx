@@ -30,13 +30,13 @@ export const FloorPlan2D = ({ selectedRoom }: FloorPlan2DProps) => {
     canvas.style.height = `${rect.height}px`;
     ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
-    // Calculate scale to fit the floor plan
-    const padding = 40;
+    // Calculate scale to fit the floor plan perfectly
+    const padding = 20;
     const availableWidth = rect.width - padding * 2;
     const availableHeight = rect.height - padding * 2;
     const scaleX = availableWidth / floorPlanData.planSize.width;
     const scaleY = availableHeight / floorPlanData.planSize.height;
-    const baseScale = Math.min(scaleX, scaleY) * 0.8;
+    const baseScale = Math.min(scaleX, scaleY);
 
     // Clear canvas
     ctx.fillStyle = 'hsl(0, 0%, 96%)';

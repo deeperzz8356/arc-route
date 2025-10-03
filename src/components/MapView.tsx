@@ -56,8 +56,8 @@ export const MapView = ({ onNavigate, onBack }: MapViewProps) => {
         </Button>
       </div>
 
-      {/* Map Container */}
-      <div className="flex-1 relative overflow-hidden bg-background">
+      {/* Map Container - Full Screen */}
+      <div className="absolute inset-0 top-[73px] bottom-0 overflow-hidden bg-background">
         <FloorPlan2D selectedRoom={selectedRoom} />
       </div>
 

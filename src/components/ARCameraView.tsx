@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Volume2, VolumeX, Navigation, MapPin } from "lucide-react";
+import { ArrowLeft, Volume2, VolumeX, Navigation, MapPin, ArrowUp } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { CameraView } from "./CameraView";
 import { floorPlanData } from "@/data/floorPlanData";
+import { toast } from "sonner";
 
 interface ARCameraViewProps {
   destination?: string;
@@ -15,41 +16,102 @@ export const ARCameraView = ({ destination = "ENTRANCE\nLOBBY", onBack }: ARCame
   const [distance, setDistance] = useState(85);
   const [direction, setDirection] = useState("Walk straight ahead");
   const [cameraReady, setCameraReady] = useState(false);
+  const [deviceHeading, setDeviceHeading] = useState(0);
+  const [targetBearing, setTargetBearing] = useState(0);
+  const [userPosition, setUserPosition] = useState({ x: 5, y: 5 });
 
+  // Find destination coordinates and calculate bearing
   useEffect(() => {
-    // Simulate navigation with voice guidance
-    const directions = [
-      "Walk straight ahead",
-      "Turn right ahead", 
-      "Continue straight",
-      "Turn left at the corner",
-      "Almost there"
-    ];
-    
-    let dirIndex = 0;
-    const interval = setInterval(() => {
-      setDistance(prev => {
-        const newDist = Math.max(0, prev - 3);
-        
-        // Update direction every 15 meters
-        if (newDist % 15 === 0 && dirIndex < directions.length - 1) {
-          dirIndex++;
-          setDirection(directions[dirIndex]);
-          
-          // Voice guidance
-          if (!isMuted && 'speechSynthesis' in window) {
-            const utterance = new SpeechSynthesisUtterance(directions[dirIndex]);
-            utterance.rate = 0.9;
-            speechSynthesis.speak(utterance);
+    const room = floorPlanData.rooms.find(r => r.name === destination);
+    if (room) {
+      const centerX = room.points.reduce((sum, p) => sum + p[0], 0) / room.points.length;
+      const centerY = room.points.reduce((sum, p) => sum + p[1], 0) / room.points.length;
+      
+      // Calculate bearing from user to destination
+      const dx = centerX - userPosition.x;
+      const dy = centerY - userPosition.y;
+      let bearing = Math.atan2(dx, -dy) * (180 / Math.PI);
+      if (bearing < 0) bearing += 360;
+      setTargetBearing(bearing);
+      
+      // Calculate distance
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      setDistance(Math.round(dist * 2));
+    }
+  }, [destination, userPosition]);
+
+  // Request device orientation permission and track compass heading
+  useEffect(() => {
+    const requestOrientation = async () => {
+      if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
+        try {
+          const permission = await (DeviceOrientationEvent as any).requestPermission();
+          if (permission !== 'granted') {
+            toast.error('Device orientation permission denied');
           }
+        } catch (error) {
+          console.error('Error requesting device orientation:', error);
         }
-        
-        return newDist;
+      }
+    };
+
+    requestOrientation();
+
+    const handleOrientation = (event: DeviceOrientationEvent) => {
+      if (event.alpha !== null) {
+        // Alpha gives us the compass heading (0-360)
+        // Adjust for device calibration
+        const heading = 360 - event.alpha;
+        setDeviceHeading(heading);
+      }
+    };
+
+    window.addEventListener('deviceorientation', handleOrientation);
+    return () => window.removeEventListener('deviceorientation', handleOrientation);
+  }, []);
+
+  // Update navigation instructions and simulate movement
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Calculate relative bearing (where to turn)
+      const relativeBearing = (targetBearing - deviceHeading + 360) % 360;
+      
+      // Update instruction based on relative bearing
+      if (distance < 5) {
+        setDirection("You've arrived at your destination!");
+        if (!isMuted && 'speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance("You have arrived");
+          speechSynthesis.speak(utterance);
+        }
+      } else if (relativeBearing < 30 || relativeBearing > 330) {
+        setDirection("Walk straight ahead");
+      } else if (relativeBearing >= 30 && relativeBearing < 150) {
+        setDirection("Turn right and continue");
+      } else if (relativeBearing >= 150 && relativeBearing < 210) {
+        setDirection("Turn around");
+      } else {
+        setDirection("Turn left and continue");
+      }
+
+      // Simulate gradual movement towards destination
+      setUserPosition(prev => {
+        const room = floorPlanData.rooms.find(r => r.name === destination);
+        if (room) {
+          const centerX = room.points.reduce((sum, p) => sum + p[0], 0) / room.points.length;
+          const centerY = room.points.reduce((sum, p) => sum + p[1], 0) / room.points.length;
+          const dx = centerX - prev.x;
+          const dy = centerY - prev.y;
+          return {
+            x: prev.x + dx * 0.03,
+            y: prev.y + dy * 0.03
+          };
+        }
+        return prev;
       });
     }, 1000);
-    
+
     return () => clearInterval(interval);
-  }, [isMuted]);
+  }, [targetBearing, deviceHeading, distance, isMuted, destination]);
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden">
@@ -58,35 +120,37 @@ export const ARCameraView = ({ destination = "ENTRANCE\nLOBBY", onBack }: ARCame
 
       {/* AR Overlays */}
       <div className="absolute inset-0">
-        {/* Direction arrows - animated */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-          <div className="relative">
-            {/* Main arrow */}
-            <svg width="200" height="300" className="animate-float">
-              <defs>
-                <linearGradient id="arrowGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="hsl(var(--secondary))" stopOpacity="0.8" />
-                  <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.9" />
-                </linearGradient>
-                <filter id="glow">
-                  <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
-                  <feMerge>
-                    <feMergeNode in="coloredBlur"/>
-                    <feMergeNode in="SourceGraphic"/>
-                  </feMerge>
-                </filter>
-              </defs>
-              
-              {/* Arrow shaft */}
-              <rect x="90" y="100" width="20" height="150" fill="url(#arrowGradient)" filter="url(#glow)" rx="10" />
-              
-              {/* Arrow head */}
-              <polygon points="100,80 60,120 100,110 140,120" fill="url(#arrowGradient)" filter="url(#glow)" />
-              
-              {/* Pulsing rings */}
-              <circle cx="100" cy="180" r="30" fill="none" stroke="hsl(var(--secondary))" strokeWidth="2" opacity="0.5" className="animate-ar-ping" />
-              <circle cx="100" cy="180" r="30" fill="none" stroke="hsl(var(--primary))" strokeWidth="2" opacity="0.5" className="animate-ar-ping" style={{ animationDelay: '0.5s' }} />
-            </svg>
+        {/* Direction Arrow - Rotates to point to destination */}
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+          <div 
+            className="relative w-40 h-40 transition-transform duration-500 ease-out"
+            style={{
+              transform: `rotate(${(targetBearing - deviceHeading + 360) % 360}deg)`
+            }}
+          >
+            {/* Main arrow pointing up (north) */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <ArrowUp 
+                className="w-32 h-32 text-primary"
+                strokeWidth={3}
+                style={{
+                  filter: 'drop-shadow(0 0 20px hsl(var(--primary) / 0.8))'
+                }}
+              />
+            </div>
+            
+            {/* Pulsing ring effect */}
+            <div className="absolute inset-0 animate-ping opacity-60">
+              <ArrowUp 
+                className="w-32 h-32 text-primary m-4"
+                strokeWidth={2}
+              />
+            </div>
+            
+            {/* Distance indicator */}
+            <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-card/90 px-3 py-1 rounded-full border border-primary/50 whitespace-nowrap">
+              <span className="text-sm font-semibold text-primary">{distance}m</span>
+            </div>
           </div>
         </div>
 
