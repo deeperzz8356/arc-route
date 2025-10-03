@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Layers, Navigation2, Coffee, WashingMachine, Flame, ArrowUpDown } from "lucide-react";
-import { FloorPlan3D } from "./FloorPlan3D";
+import { FloorPlan2D } from "./FloorPlan2D";
 import { floorPlanData } from "@/data/floorPlanData";
 
 interface MapViewProps {
@@ -41,7 +41,7 @@ export const MapView = ({ onNavigate, onBack }: MapViewProps) => {
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div>
-            <h2 className="font-semibold">3D Floor Map</h2>
+            <h2 className="font-semibold">Floor Map</h2>
             <p className="text-sm text-muted-foreground">Floor {floor}</p>
           </div>
         </div>
@@ -58,7 +58,7 @@ export const MapView = ({ onNavigate, onBack }: MapViewProps) => {
 
       {/* Map Container */}
       <div className="flex-1 relative overflow-hidden bg-background">
-        <FloorPlan3D selectedRoom={selectedRoom} />
+        <FloorPlan2D selectedRoom={selectedRoom} />
       </div>
 
       {/* Room selector */}
