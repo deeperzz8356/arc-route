@@ -8,6 +8,7 @@ import { floorPlanData } from "@/data/floorPlanData";
 interface SearchDestinationProps {
   onNavigate: (screen: string, destination?: string) => void;
   onBack: () => void;
+  startLocation?: string;
 }
 
 // Generate destinations from floor plan data
@@ -29,7 +30,7 @@ const RECENT = [
   DESTINATIONS.find(d => d.name.includes('LAB'))?.name || "Lab"
 ].filter(Boolean);
 
-export const SearchDestination = ({ onNavigate, onBack }: SearchDestinationProps) => {
+export const SearchDestination = ({ onNavigate, onBack, startLocation }: SearchDestinationProps) => {
   const [search, setSearch] = useState("");
   const [selectedDestination, setSelectedDestination] = useState<string | null>(null);
 
@@ -46,24 +47,33 @@ export const SearchDestination = ({ onNavigate, onBack }: SearchDestinationProps
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <div className="glass-effect border-b border-border/50 p-4 flex items-center gap-3">
-        <Button 
-          variant="ghost" 
-          size="icon"
-          onClick={onBack}
-          className="hover:bg-primary/10"
-        >
-          <X className="w-5 h-5" />
-        </Button>
-        <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-          <Input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search rooms, facilities..."
-            className="pl-10 bg-input border-border/50 focus:border-primary"
-          />
+      <div className="glass-effect border-b border-border/50 p-4 space-y-3">
+        <div className="flex items-center gap-3">
+          <Button 
+            variant="ghost" 
+            size="icon"
+            onClick={onBack}
+            className="hover:bg-primary/10"
+          >
+            <X className="w-5 h-5" />
+          </Button>
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search rooms, facilities..."
+              className="pl-10 bg-input border-border/50 focus:border-primary"
+            />
+          </div>
         </div>
+        {startLocation && (
+          <div className="flex items-center gap-2 text-sm">
+            <MapPin className="w-4 h-4 text-primary" />
+            <span className="text-muted-foreground">From:</span>
+            <span className="font-medium text-foreground">{startLocation}</span>
+          </div>
+        )}
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-6">

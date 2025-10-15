@@ -52,7 +52,7 @@ export const HomePage = ({ onNavigate }: HomePageProps) => {
         {/* CTA Buttons */}
         <div className="w-full space-y-3">
           <Button 
-            onClick={() => onNavigate('search')}
+            onClick={() => onNavigate('selectStart')}
             className="w-full h-14 text-lg bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-opacity shadow-[0_0_30px_rgba(147,51,234,0.4)]"
           >
             <Search className="mr-2 w-5 h-5" />
@@ -60,7 +60,7 @@ export const HomePage = ({ onNavigate }: HomePageProps) => {
           </Button>
           
           <Button 
-            onClick={() => onNavigate('map')}
+            onClick={() => onNavigate('selectStart')}
             variant="outline"
             className="w-full h-12 border-primary/50 hover:bg-primary/10"
           >
