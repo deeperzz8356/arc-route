@@ -60,29 +60,13 @@ export const HomePage = ({ onNavigate }: HomePageProps) => {
           </Button>
           
           <Button 
-            onClick={() => onNavigate('selectStart')}
+            onClick={() => onNavigate('map')}
             variant="outline"
-            className="w-full h-12 border-primary/50 hover:bg-primary/10"
+            className="w-full h-12 border-primary/50 hover:bg-muted"
           >
             <Map className="mr-2 w-5 h-5" />
             View Map
           </Button>
-        </div>
-
-        {/* Stats */}
-        <div className="flex justify-around w-full pt-4 border-t border-border/50">
-          <div className="text-center">
-            <p className="text-2xl font-bold text-primary">500+</p>
-            <p className="text-xs text-muted-foreground">Locations</p>
-          </div>
-          <div className="text-center">
-            <p className="text-2xl font-bold text-secondary">99.9%</p>
-            <p className="text-xs text-muted-foreground">Accuracy</p>
-          </div>
-          <div className="text-center">
-            <p className="text-2xl font-bold text-accent">AR</p>
-            <p className="text-xs text-muted-foreground">Powered</p>
-          </div>
         </div>
       </div>
     </div>
